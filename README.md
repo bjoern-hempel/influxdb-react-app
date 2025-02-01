@@ -18,6 +18,16 @@ Start the InfluxDB Server:
 docker compose up -d
 ```
 
+Find out the InfluxDB Version:
+
+```shell
+docker compose exec influxdb2 influxd version
+```
+
+```shell
+InfluxDB v2.7.11 (git: fbf5d4ab5e) build_date: 2024-12-02T17:48:15Z
+```
+
 Open the project in your browser:
 
 * http://localhost:8086 (InfluxDB backend)
@@ -39,6 +49,7 @@ Open the project in your browser:
 | **Point**          | A single data record in InfluxDB that consists of a measurement, timestamp, tags, and fields.                  |
 | **Schema**         | The design of how data is structured within InfluxDB, including measurements, fields, and tags.                |
 | **Task**           | A scheduled automation script that executes Flux queries to process or transform data periodically.            |
+| **Aggregation**    | A function that summarizes data over a time range, such as `mean()`, `sum()`, `min()`, `max()`, or `count()`.  |
 
 ## First manual entries
 

@@ -25,7 +25,7 @@
 #
 # Login into containers:
 # ----------------------
-# ❯ docker-compose exec influxdb2 bash
+# ❯ docker compose exec influxdb2 bash
 #
 # Open app (local - localhost):
 # -----------------
