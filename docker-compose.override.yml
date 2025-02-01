@@ -1,0 +1,89 @@
+# ===========================================
+# A recipe to deliver the app via influxdb.
+#
+# @author Björn Hempel <bjoern@hempel.li>
+# @version 0.1.0 (2025-02-01)
+# @since 0.1.0 (2025-02-01) First version
+# ===========================================
+
+# ===========================================
+# Start app:
+# ----------
+# ❯ docker-compose up -d
+#
+# Show containers:
+# ----------------
+# ❯ docker container ls
+#
+# Build images:
+# -------------
+# ❯ docker-compose build
+#
+# Show logs:
+# ----------------
+# ❯ docker-compose logs -f
+#
+# Login into containers:
+# ----------------------
+# ❯ docker-compose exec influxdb2 bash
+#
+# Open app (local - localhost):
+# -----------------
+#
+# With Traefik proxy:
+# - https://www.influxdb.localhost/ (admin / secret-pass)
+#
+# Without Traefik proxy:
+# - http://localhost:8086/ (admin / secret-pass)
+#
+# Restart containers:
+# -------------------
+# ❯ docker-compose restart
+#
+# Shutdown containers:
+# --------------------
+# ❯ docker-compose down
+#
+# Installation:
+# -------------
+# ❯ docker-compose up -d
+#
+# ===========================================
+
+# Configures the services
+services:
+
+  # InfluxDB2 instance
+  influxdb2:
+    ports:
+      - "${PORT_INFLUXDB_EXPOSE}:${PORT_INFLUXDB_INTERNAL}"
+    networks:
+      - network-internal
+      - network-traefik
+    labels:
+      # enable traefik
+      - "traefik.enable=true"
+      # middleware
+      - "traefik.http.middlewares.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_frame.headers.customFrameOptionsValue=sameorigin"
+      # services (load balancer)
+      - "traefik.http.services.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_http_lb.loadbalancer.server.port=${PORT_INFLUXDB_INTERNAL}"
+      - "traefik.http.services.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_http_lb.loadbalancer.server.scheme=http"
+      # http layer -> redirect https
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_http.entrypoints=web"
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_http.rule=Host(`www.${URL_LOCAL}`)"
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_http.middlewares=${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https"
+      # https layer
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https.entrypoints=websecure"
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https.rule=Host(`www.${URL_LOCAL}`)"
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https.middlewares=${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_frame"
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https.service=${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_http_lb"
+      - "traefik.http.routers.${NAMESPACE_HOSTNAME_UNDERLINE}_influxdb_https.tls=true"
+      # network
+      - "traefik.docker.network=${NETWORK_NAME_TRAEFIK_PUBLIC_LOCAL}"
+
+# configure networks
+networks:
+  network-traefik:
+    external: true
+    name: "${NETWORK_NAME_TRAEFIK_PUBLIC_LOCAL}"

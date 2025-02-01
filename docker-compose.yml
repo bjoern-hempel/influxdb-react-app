@@ -1,0 +1,107 @@
+# ===========================================
+# A recipe to deliver the app via influxdb.
+#
+# @author Björn Hempel <bjoern@hempel.li>
+# @version 0.1.0 (2025-02-01)
+# @since 0.1.0 (2025-02-01) First version
+# ===========================================
+
+# ===========================================
+# Start app:
+# ----------
+# ❯ docker-compose up -d
+#
+# Show containers:
+# ----------------
+# ❯ docker container ls
+#
+# Build images:
+# -------------
+# ❯ docker-compose build
+#
+# Show logs:
+# ----------------
+# ❯ docker-compose logs -f
+#
+# Login into containers:
+# ----------------------
+# ❯ docker-compose exec influxdb2 bash
+#
+# Open app (local - localhost):
+# -----------------
+#
+# With Traefik proxy:
+# - https://www.influxdb.localhost/ (admin / secret-pass)
+#
+# Without Traefik proxy:
+# - http://localhost:8086/ (admin / secret-pass)
+#
+# Restart containers:
+# -------------------
+# ❯ docker-compose restart
+#
+# Shutdown containers:
+# --------------------
+# ❯ docker-compose down
+#
+# Installation:
+# -------------
+# ❯ docker-compose up -d
+#
+# ===========================================
+
+# Configures the services
+services:
+
+  # InfluxDB2 instance
+  influxdb2:
+    image: "${IMAGE_INFLUXDB}"
+    container_name: "${NAMESPACE_DEVELOPMENT}.influxdb"
+    hostname: "${NAMESPACE_HOSTNAME_DEVELOPMENT}-influxdb"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME_FILE: /run/secrets/influxdb2-admin-username
+      DOCKER_INFLUXDB_INIT_PASSWORD_FILE: /run/secrets/influxdb2-admin-password
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE: /run/secrets/influxdb2-admin-token
+      DOCKER_INFLUXDB_INIT_ORG: docs
+      DOCKER_INFLUXDB_INIT_BUCKET: home
+    secrets:
+      - influxdb2-admin-username
+      - influxdb2-admin-password
+      - influxdb2-admin-token
+    volumes:
+      # influxdb data volume
+      - type: volume
+        source: influxdb2-data
+        target: /var/lib/influxdb2
+      # influxdb config volume
+      - type: volume
+        source: influxdb2-config
+        target: /etc/influxdb2
+    networks:
+      - network-internal
+
+# configure volumes
+secrets:
+  influxdb2-admin-username:
+    file: ./.env.influxdb2-admin-username
+  influxdb2-admin-password:
+    file: ./.env.influxdb2-admin-password
+  influxdb2-admin-token:
+    file: ./.env.influxdb2-admin-token
+
+# configure volumes
+volumes:
+  # influxdb data volume
+  influxdb2-data:
+    name: "${NAMESPACE}.influxdb.data"
+
+  # influxdb config volume
+  influxdb2-config:
+    name: "${NAMESPACE}.influxdb.config"
+
+# configure networks
+networks:
+  network-internal:
+    external: false
+    name: "${NAMESPACE}.network.internal"
