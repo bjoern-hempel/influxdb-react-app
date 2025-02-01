@@ -53,4 +53,53 @@ Open the project in your browser:
 
 ## First manual entries
 
-Tbd.
+### Create new bucket
+
+* Load Data > Buckets > Create bucket > `climate`
+* Retention Time > Older than 30 days
+
+### Add data (via Line Protocol)
+
+* Load Data > Sources > Line Protocol > `climate` > Enter manually
+
+#### Format
+
+```text
+measurementName,tagKey=tagValue fieldKey="fieldValue" 1465839830100400200
+--------------- --------------- --------------------- -------------------
+       |               |                  |                    |
+  Measurement       Tag set           Field set            Timestamp
+```
+
+#### Data
+
+```
+weather,city=Dresden,country=de temperature=0.0,humidity=76,pressure=1032,visibility=11.0 1738340461698853888
+weather,city=Dresden,country=de temperature=5.5,humidity=87,pressure=1026,visibility=9.9 1738344061698853888
+weather,city=Dresden,country=de temperature=4.4,humidity=78,pressure=1026,visibility=10.8 1738347661698853888
+weather,city=Dresden,country=de temperature=1.0,humidity=83,pressure=1031,visibility=10.3 1738351261698853888
+weather,city=Dresden,country=de temperature=4.9,humidity=78,pressure=1030,visibility=9.5 1738354861698853888
+weather,city=Dresden,country=de temperature=3.1,humidity=83,pressure=1035,visibility=8.7 1738358461698853888
+weather,city=Dresden,country=de temperature=2.0,humidity=86,pressure=1034,visibility=8.9 1738362061698853888
+weather,city=Dresden,country=de temperature=0.9,humidity=80,pressure=1033,visibility=10.2 1738365661698853888
+weather,city=Dresden,country=de temperature=4.2,humidity=87,pressure=1033,visibility=10.4 1738369261698853888
+weather,city=Dresden,country=de temperature=2.7,humidity=85,pressure=1031,visibility=11.1 1738372861698853888
+weather,city=Dresden,country=de temperature=3.3,humidity=79,pressure=1033,visibility=10.8 1738376461698853888
+weather,city=Dresden,country=de temperature=2.1,humidity=82,pressure=1030,visibility=9.6 1738380061698853888
+weather,city=Dresden,country=de temperature=1.6,humidity=90,pressure=1027,visibility=8.1 1738383661698853888
+weather,city=Dresden,country=de temperature=3.8,humidity=79,pressure=1031,visibility=9.0 1738387261698853888
+weather,city=Dresden,country=de temperature=5.3,humidity=76,pressure=1029,visibility=11.5 1738390861698853888
+weather,city=Dresden,country=de temperature=2.5,humidity=81,pressure=1028,visibility=10.7 1738394461698853888
+weather,city=Dresden,country=de temperature=3.0,humidity=85,pressure=1032,visibility=9.4 1738398061698853888
+weather,city=Dresden,country=de temperature=1.7,humidity=88,pressure=1034,visibility=8.2 1738401661698853888
+weather,city=Dresden,country=de temperature=4.4,humidity=77,pressure=1031,visibility=10.1 1738405261698853888
+weather,city=Dresden,country=de temperature=2.8,humidity=80,pressure=1032,visibility=9.8 1738408861698853888
+weather,city=Dresden,country=de temperature=3.5,humidity=86,pressure=1029,visibility=9.3 1738412461698853888
+weather,city=Dresden,country=de temperature=1.3,humidity=84,pressure=1032,visibility=10.9 1738416061698853888
+weather,city=Dresden,country=de temperature=3.9,humidity=75,pressure=1030,visibility=11.2 1738419661698853888
+weather,city=Dresden,country=de temperature=4.0,humidity=83,pressure=1031,visibility=10.0 1738423261698853888
+```
+
+
+
+
