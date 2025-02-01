@@ -140,7 +140,7 @@ curl -X POST \
 'http://localhost:8086/api/v2/write?bucket=climate&org=docs'
 ```
 
-### Query data
+### Query data (Flux Query Language)
 
 * See: https://docs.influxdata.com/influxdb/v1/flux/
 
