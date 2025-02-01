@@ -55,14 +55,14 @@ Open the project in your browser:
 
 ### Create new bucket
 
+Menu:
+
 * Load Data > Buckets > Create bucket > `climate`
 * Retention Time > Older than 30 days
 
-### Add data (via Line Protocol)
+### InfluxDb Format
 
-* Load Data > Sources > Line Protocol > `climate` > Enter manually
-
-#### Format
+* See: https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/
 
 ```text
 measurementName,tagKey=tagValue fieldKey="fieldValue" 1465839830100400200
@@ -71,9 +71,15 @@ measurementName,tagKey=tagValue fieldKey="fieldValue" 1465839830100400200
   Measurement       Tag set           Field set            Timestamp
 ```
 
-#### Data
+### Add data
+
+#### Via Line Protocol
 
 * See for good schemas: https://docs.influxdata.com/influxdb/v2/write-data/best-practices/schema-design/
+
+Menu:
+
+* Load Data > Sources > Line Protocol > `climate` > Enter manually
 
 ```
 weather,city=Dresden,country=de temperature=0.0,humidity=76,pressure=1032,visibility=11.0 1738340461698853888
@@ -102,9 +108,43 @@ weather,city=Dresden,country=de temperature=3.9,humidity=75,pressure=1030,visibi
 weather,city=Dresden,country=de temperature=4.0,humidity=83,pressure=1031,visibility=10.0 1738423261698853888
 ```
 
-#### Simple example: Show hourly mean aggregation of humidity and temperature
+#### Via http request (raw - curl)
+
+Create API token:
+
+* Load Data > API token > Generate API token > All Access API token
+
+```text
+QsY...amA==
+```
+
+Get organisation:
+
+* User > About > Organization Profile
+
+```text
+docs
+```
+
+Get bucket:
+
+* `climate`
+
+Build curl command
+
+```shell
+curl -X POST \
+--data 'weather,city=Dresden,country=de temperature=4.0,humidity=83,pressure=1031,visibility=10.0 1738423261698853888' \
+-H 'Authorization: Token QsY...amA==' \
+-H 'Content-Type: text/plain' \
+'http://localhost:8086/api/v2/write?bucket=climate&org=docs'
+```
+
+### Query data
 
 * See: https://docs.influxdata.com/influxdb/v1/flux/
+
+#### Simple example: Show hourly mean aggregation of humidity and temperature
 
 ```javascript
 from(bucket: "climate")
