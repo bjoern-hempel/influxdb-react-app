@@ -73,6 +73,8 @@ measurementName,tagKey=tagValue fieldKey="fieldValue" 1465839830100400200
 
 #### Data
 
+* See for good schemas: https://docs.influxdata.com/influxdb/v2/write-data/best-practices/schema-design/
+
 ```
 weather,city=Dresden,country=de temperature=0.0,humidity=76,pressure=1032,visibility=11.0 1738340461698853888
 weather,city=Dresden,country=de temperature=5.5,humidity=87,pressure=1026,visibility=9.9 1738344061698853888
@@ -100,6 +102,19 @@ weather,city=Dresden,country=de temperature=3.9,humidity=75,pressure=1030,visibi
 weather,city=Dresden,country=de temperature=4.0,humidity=83,pressure=1031,visibility=10.0 1738423261698853888
 ```
 
+#### Simple example: Show hourly mean aggregation of humidity and temperature
 
+* See: https://docs.influxdata.com/influxdb/v1/flux/
+
+```javascript
+from(bucket: "climate")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "weather")
+  |> filter(fn: (r) => r["_field"] == "humidity" or r["_field"] == "temperature")
+  |> filter(fn: (r) => r["city"] == "Dresden")
+  |> filter(fn: (r) => r["country"] == "de")
+  |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+  |> yield(name: "mean")
+```
 
 
