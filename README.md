@@ -148,12 +148,12 @@ curl -X POST \
 
 ```javascript
 from(bucket: "climate")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["_measurement"] == "weather")
-  |> filter(fn: (r) => r["_field"] == "humidity" or r["_field"] == "temperature")
-  |> filter(fn: (r) => r["city"] == "Dresden")
-  |> filter(fn: (r) => r["country"] == "de")
-  |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+  |> range(start: 2025-02-01T00:01:01Z, stop: 2025-02-01T23:59:21Z)
+  |> filter(fn: (r) => r._measurement == "weather")
+  |> filter(fn: (r) => r.city == "Dresden")
+  |> filter(fn: (r) => r.country == "de")
+  |> filter(fn: (r) => r._field == "humidity" or r._field == "temperature")
+  |> aggregateWindow(every: 30m, fn: mean, createEmpty: false)
   |> yield(name: "mean")
 ```
 
